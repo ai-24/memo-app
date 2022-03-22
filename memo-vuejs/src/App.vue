@@ -4,14 +4,21 @@
       <h1>{{ title }}</h1>
     </div>
     <div class="memo-list" v-if="memos">
-      <MemoList :memos="memos" @show-detail="onForm"></MemoList>
+      <MemoList :memos="memos"
+                @show-detail="onForm"
+      ></MemoList>
     </div>
     <div class="new">
       <NewMemo @open="newForm"></NewMemo>
     </div>
   </div>
   <div class="form" v-if="form">
-    <MemoForm :newMemo="newMemo" :memos="memos" :pickedMemo="pickedMemo" :index=index @renew="onRenew"></MemoForm>
+    <MemoForm :newMemo="newMemo"
+              :pickedMemo="pickedMemo"
+              @create="onCreate"
+              @edit="onEdit"
+              @delete="onDestroy"
+    ></MemoForm>
   </div>
 </template>
 
@@ -37,10 +44,24 @@ export default {
     this.memos = JSON.parse(localStorage.getItem('memos'))
   },
   methods: {
+    onDestroy () {
+      const isDelete = confirm('削除しますか？')
+      if (isDelete) {
+        this.memos.splice(this.index, 1)
+        localStorage.setItem('memos', JSON.stringify(this.memos))
+      }
+    },
+    onEdit (detail) {
+      this.memos.splice(this.index, 1, detail)
+      localStorage.setItem('memos', JSON.stringify(this.memos))
+    },
+    onCreate (detail) {
+      this.memos.push(detail)
+      localStorage.setItem('memos', JSON.stringify(this.memos))
+    },
     newForm () {
       this.newMemo = true
       this.form = false
-      // this.pickedMemo = {}
       this.showForm()
     },
     showForm () {
@@ -49,9 +70,6 @@ export default {
     hideForm () {
       this.form = false
       this.newMemo = false
-    },
-    onRenew () {
-      this.memos = JSON.parse(localStorage.getItem('memos'))
     },
     onForm (memo) {
       this.form = true

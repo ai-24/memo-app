@@ -9,10 +9,6 @@ export default {
   name: 'MemoList',
   props: ['memos'],
   emits: ['showDetail'],
-  data () {
-    return {
-    }
-  },
   methods: {
     showMemo (memo, index) {
       this.$emit('showDetail', [memo, index])
