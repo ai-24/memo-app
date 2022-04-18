@@ -24,4 +24,8 @@ export default {
   border-style: none;
   margin-left: 10px;
 }
+.create-new-memo:hover {
+  color: darkgray;
+  cursor: pointer;
+}
 </style>

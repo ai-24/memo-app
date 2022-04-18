@@ -1,21 +1,34 @@
 <template>
+  <p class="new-memo" v-if="newMemo">新規メモ</p>
   <form>
     <textarea v-model="memo"></textarea>
-    <button>
-      <span v-if="newMemo" @click="onSubmit">新規作成</span>
-      <span v-else @click="onRenew">編集</span>
-    </button>
-    <button @click="onDelete">削除</button>
+    <div class="form-button">
+      <button class="add">
+        <span v-if="newMemo" @click="onSubmit">新規作成</span>
+        <span v-else @click="onRenew">編集</span>
+      </button>
+      <button class="delete" v-if="!newMemo" @click="onDelete">削除</button>
+    </div>
   </form>
 </template>
 
 <script>
+
 export default {
   name: 'MemoForm',
-  props: ['newMemo', 'pickedMemo'],
+  props: {
+    newMemo: {
+      type: Boolean,
+      require: true
+    },
+    pickedMemo: {
+      type: Array
+    }
+  },
+  emits: ['create', 'edit', 'delete'],
   data () {
     return {
-      memo: '',
+      content: '',
       detail: {
         memoTitle: '',
         memoContent: '',
@@ -23,15 +36,11 @@ export default {
       }
     }
   },
-  mounted () {
-    if (this.pickedMemo.allMemo) {
-      this.memo = this.pickedMemo.allMemo
-    }
-  },
   methods: {
     create () {
-      this.detail.allMemo = this.memo
-      const memo = this.memo.split('\n')
+      this.detail.allMemo = this.content
+      console.log(this.content)
+      const memo = this.content.split('\n')
       this.detail.memoTitle = memo[0]
       memo.shift()
       this.detail.memoContent = memo
@@ -47,6 +56,16 @@ export default {
     onDelete () {
       this.$emit('delete')
     }
+  },
+  computed: {
+    memo: {
+      get () {
+        return this.pickedMemo
+      },
+      set (memo) {
+        this.content = memo
+      }
+    }
   }
 }
 </script>
@@ -56,5 +75,20 @@ textarea, form {
   height: 400px;
   width: 300px;
 }
-
+.delete, .add  {
+  margin: 10px;
+  padding:5px 25px;
+  border: none;
+  border-radius: 20px;
+  background-color: cornflowerblue;
+  color: white;
+  font-weight: bolder;
+}
+.form-button {
+  text-align: center;
+}
+.new-memo {
+  font-weight: bold;
+  margin: 7px 10px;
+}
 </style>

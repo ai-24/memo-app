@@ -1,14 +1,18 @@
 <template>
     <ul v-for="(memo, index) in memos" :key="memo">
-      <li @click="showMemo(memo, index)"><span class="list-text">{{ memo.memoTitle }}</span></li>
+      <li @click="showMemo(memo, index)" @click.self="$emit('hideForm')"><span class="list-text">{{ memo.memoTitle }}</span></li>
     </ul>
 </template>
 
 <script>
 export default {
   name: 'MemoList',
-  props: ['memos'],
-  emits: ['showDetail'],
+  props: {
+    memos: {
+      type: Array
+    }
+  },
+  emits: ['showDetail', 'hideForm'],
   methods: {
     showMemo (memo, index) {
       this.$emit('showDetail', [memo, index])
@@ -19,8 +23,11 @@ export default {
 
 <style scoped>
 .list-text:hover {
-  color: black;
+  color: darkgray;
   cursor: pointer;
+}
+.list-text {
+  color: black;
 }
 
 </style>

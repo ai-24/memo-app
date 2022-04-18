@@ -5,10 +5,11 @@
     </div>
     <div class="memo-list" v-if="memos">
       <MemoList :memos="memos"
-                @show-detail="onForm"
+                @show-detail="resetForm"
+                @hide-form="hideForm"
       ></MemoList>
     </div>
-    <div class="new">
+    <div class="new" @click.self="hideForm">
       <NewMemo @open="newForm"></NewMemo>
     </div>
   </div>
@@ -36,7 +37,7 @@ export default {
       form: false,
       newMemo: false,
       memos: [],
-      pickedMemo: {},
+      pickedMemo: [],
       index: ''
     }
   },
@@ -61,20 +62,24 @@ export default {
     },
     newForm () {
       this.newMemo = true
-      this.form = false
-      this.showForm()
-    },
-    showForm () {
+      this.pickedMemo = []
       this.form = true
     },
     hideForm () {
       this.form = false
-      this.newMemo = false
+    },
+    resetForm (memo) {
+      this.hideForm()
+      this.onForm(memo)
     },
     onForm (memo) {
-      this.form = true
-      this.pickedMemo = memo[0]
+      if (this.pickedMemo) {
+        this.pickedMemo = []
+      }
       this.index = memo[1]
+      this.pickedMemo.splice(this.index, 1, memo[0].allMemo)
+      this.newMemo = false
+      this.form = true
     }
   }
 }
